@@ -1,26 +1,49 @@
 import streamlit as st
+import urllib.parse
 
-st.set_page_config(page_title="متجر الشحن السريع", layout="centered")
+# --- إعدادات واتسابك (عدل الرقم هنا) ---
+MY_PHONE = "9677xxxxxxxx"  # ضع رقمك بدون + أو 00 (مثال: 967777123456)
 
-st.title("🎮 تطبيق شحن الألعاب والرصيد")
-st.write("اختر الخدمة التي تريدها من القائمة أدناه")
+st.set_page_config(page_title="متجر الفارس للشحن", page_icon="🎮")
 
-# قائمة التصنيفات
-category = st.selectbox("اختر التصنيف:", ["شحن ألعاب (PUBG, Free Fire)", "رصيد محلي", "بطاقات جوجل بلاي"])
+# --- واجهة التطبيق ---
+st.title("⚡ متجر الشحن السريع")
+st.markdown("---")
+st.info("💡 ملاحظة: بعد الضغط على 'إرسال'، سيفتح الواتساب لتأكيد الطلب يدوياً مع الإدارة.")
 
-if category == "شحن ألعاب (PUBG, Free Fire)":
-    game = st.radio("اختر اللعبة:", ["PUBG Mobile", "Free Fire"])
-    player_id = st.text_input("أدخل معرف اللاعب (ID):")
-    amount = st.selectbox("كمية الشحن:", ["60 UC", "325 UC", "660 UC"])
+tab1, tab2 = st.tabs(["🎮 شحن ألعاب", "📱 رصيد محلي"])
+
+with tab1:
+    st.header("شحن الألعاب العالمية")
+    game = st.selectbox("اختر اللعبة", ["PUBG Mobile", "Free Fire", "Roblox", "Call of Duty"])
+    player_id = st.text_input("أدخل معرف اللاعب (ID)", placeholder="مثال: 512345678")
+    package = st.selectbox("اختر الباقة", ["60 UC / Diamond", "325 UC / Diamond", "660 UC / Diamond"])
     
-    if st.button("تأكيد الطلب"):
-        st.success(f"تم استلام طلبك لشحن {amount} للـ ID: {player_id}")
+    if st.button("تجهيز طلب اللعبة"):
+        if player_id:
+            msg = f"🔔 طلب شحن لعبة!\n🎮 اللعبة: {game}\n🆔 الآيدي: {player_id}\n📦 الباقة: {package}"
+            encoded_msg = urllib.parse.quote(msg)
+            st.success("✅ تم تجهيز بيانات اللعبة!")
+            st.markdown(f'[اضغط هنا للإرسال عبر واتساب](https://wa.me/{MY_PHONE}?text={encoded_msg})')
+        else:
+            st.warning("يرجى إدخال معرف اللاعب")
 
-elif category == "رصيد محلي":
-    provider = st.selectbox("شركة الاتصالات:", ["شركة 1", "شركة 2", "شركة 3"])
-    phone_number = st.text_input("رقم الهاتف:")
-    balance = st.number_input("المبلغ المراد شحنه:", min_value=1)
+with tab2:
+    st.header("شحن الرصيد المحلي")
+    operator = st.selectbox("الشركة", ["زين", "اس تي سي", "موبايلي", "أخرى"])
+    phone = st.text_input("رقم الهاتف", placeholder="7xxxxxxxx")
+    amount = st.text_input("المبلغ أو الفئة:")
     
-    if st.button("شحن الآن"):
-        st.info(f"جاري معالجة شحن مبلغ {balance} للرقم {phone_number}")
+    if st.button("تجهيز طلب الرصيد"):
+        if phone and amount:
+            msg = f"📱 طلب رصيد محلي!\n🏢 الشركة: {operator}\n📞 الرقم: {phone}\n💰 المبلغ: {amount}"
+            encoded_msg = urllib.parse.quote(msg)
+            st.success("✅ تم تجهيز بيانات الرصيد!")
+            st.markdown(f'[اضغط هنا للإرسال عبر واتساب](https://wa.me/{MY_PHONE}?text={encoded_msg})')
+        else:
+            st.warning("يرجى إكمال البيانات")
+
+st.markdown("---")
+st.caption("سيتم تنفيذ طلبك يدوياً فور استلام الرسالة على الواتساب.")
+
 
