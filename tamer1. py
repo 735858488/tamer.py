@@ -1,0 +1,26 @@
+import streamlit as st
+
+st.set_page_config(page_title="متجر الشحن السريع", layout="centered")
+
+st.title("🎮 تطبيق شحن الألعاب والرصيد")
+st.write("اختر الخدمة التي تريدها من القائمة أدناه")
+
+# قائمة التصنيفات
+category = st.selectbox("اختر التصنيف:", ["شحن ألعاب (PUBG, Free Fire)", "رصيد محلي", "بطاقات جوجل بلاي"])
+
+if category == "شحن ألعاب (PUBG, Free Fire)":
+    game = st.radio("اختر اللعبة:", ["PUBG Mobile", "Free Fire"])
+    player_id = st.text_input("أدخل معرف اللاعب (ID):")
+    amount = st.selectbox("كمية الشحن:", ["60 UC", "325 UC", "660 UC"])
+    
+    if st.button("تأكيد الطلب"):
+        st.success(f"تم استلام طلبك لشحن {amount} للـ ID: {player_id}")
+
+elif category == "رصيد محلي":
+    provider = st.selectbox("شركة الاتصالات:", ["شركة 1", "شركة 2", "شركة 3"])
+    phone_number = st.text_input("رقم الهاتف:")
+    balance = st.number_input("المبلغ المراد شحنه:", min_value=1)
+    
+    if st.button("شحن الآن"):
+        st.info(f"جاري معالجة شحن مبلغ {balance} للرقم {phone_number}")
+
